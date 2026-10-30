@@ -16,4 +16,6 @@ python3 -m unittest discover -s tests -v
 
 Los contadores de recordatorios, entregas, asistencias y ausencias permanecen sin publicar hasta disponer de una exportación agregada verificable. [MEDICION.md](MEDICION.md) establece cohortes, fórmulas y límites.
 
+Para recursos, cada fila debe respetar exactamente las seis columnas de la plantilla. `componente`, `muestra` y `evidencia` son identificadores obligatorios y no admiten espacios externos; así se evita separar accidentalmente una misma serie o aceptar una muestra sin identidad. El calculador rechaza filas con columnas adicionales, muestras duplicadas, valores negativos o números no finitos.
+
 El estado de la sesión de mensajería, la salud de un servicio y la entrega al destinatario son comprobaciones distintas. La validación estructural de un respaldo tampoco acredita por sí sola una restauración completa.

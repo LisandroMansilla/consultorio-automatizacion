@@ -70,6 +70,20 @@ class MetricTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     metricas.recursos(p)
 
+    def test_resource_rows_require_unambiguous_identifiers_and_shape(self):
+        header = 'fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
+        invalid_rows = [
+            '2000-01-01,n8n,,1,10,FIXTURE_SINTETICO\n',
+            '2000-01-01, n8n,1,1,10,FIXTURE_SINTETICO\n',
+            '2000-01-01,n8n,1,1,10,   \n',
+            '2000-01-01,n8n,1,1,10,FIXTURE_SINTETICO,COLUMNA_EXTRA\n',
+        ]
+        for body in invalid_rows:
+            with self.subTest(body=body), tempfile.TemporaryDirectory() as d:
+                p = Path(d) / 'test.csv'; p.write_text(header + body)
+                with self.assertRaises(ValueError):
+                    metricas.recursos(p)
+
 
 if __name__ == '__main__':
     unittest.main()

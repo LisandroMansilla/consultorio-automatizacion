@@ -17,6 +17,11 @@ def recursos(path):
         if set(reader.fieldnames or []) != required:
             raise ValueError('Columnas de recursos distintas del contrato')
         for row in reader:
+            if set(row) != required or any(value is None for value in row.values()):
+                raise ValueError('Fila de recursos distinta del contrato')
+            identifiers = (row['componente'], row['muestra'], row['evidencia'])
+            if any(not value.strip() or value != value.strip() for value in identifiers):
+                raise ValueError('Componente, muestra y evidencia deben ser identificadores no vacíos sin espacios externos')
             date.fromisoformat(row['fecha'])
             key = (row['fecha'], row['componente'], row['muestra'])
             if key in seen:
@@ -25,8 +30,6 @@ def recursos(path):
             cpu, memory = float(row['cpu_pct']), float(row['memoria_mib'])
             if not all(math.isfinite(x) and x >= 0 for x in (cpu, memory)):
                 raise ValueError('Recurso negativo o no finito')
-            if not row['componente'] or not row['evidencia']:
-                raise ValueError('Componente y evidencia requeridos')
             groups[(row['fecha'], row['componente'], row['evidencia'])].append((cpu, memory))
     result = []
     for (day, component, source), values in sorted(groups.items()):
