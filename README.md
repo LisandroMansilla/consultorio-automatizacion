@@ -1,3 +1,5 @@
+![Consultorio digital: integración, automatización y operación de turnos.](assets/portada.svg)
+
 # Consultorio digital · Automatización de turnos
 
 **Caso técnico de integración, despliegue y operación de recordatorios y confirmaciones por WhatsApp.**
