@@ -61,6 +61,15 @@ class MetricTests(unittest.TestCase):
             with self.subTest(payload=payload), self.assertRaises(ValueError):
                 metricas.operacion(payload)
 
+    def test_operational_period_requires_metadata_and_one_counter(self):
+        without_cutoff = example()
+        without_cutoff.pop('corte')
+        no_counters = example(**{key: None for key in metricas.COUNTERS})
+        for row in [without_cutoff, example(fuente=' FIXTURE_SINTETICO'),
+                    example(fuente='FIXTURE_SINTETICO '), no_counters]:
+            with self.subTest(row=row), self.assertRaises(ValueError):
+                metricas.operacion({'periodos': [row]})
+
     def test_non_finite_or_repeated_resource_sample_is_rejected(self):
         header = 'fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
         for body in ['2000-01-01,n8n,1,nan,10,FIXTURE_SINTETICO\n',

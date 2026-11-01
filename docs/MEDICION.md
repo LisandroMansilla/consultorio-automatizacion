@@ -23,6 +23,8 @@ El comando `operacion` acepta un objeto con `periodos`, una lista. Cada entrada 
 
 Los contadores de turnos deben usar la misma cohorte entre sí; no necesitan confundirse con la cohorte de mensajes. No incluir información de pacientes en los archivos de este repositorio. El ejemplo distribuido es una lista vacía, sin datos operativos inventados.
 
+Los cuatro metadatos (`inicio`, `fin`, `corte` y `fuente`) son obligatorios. `fuente` debe ser un identificador no vacío y sin espacios externos. Cada período debe aportar al menos uno de los cinco contadores; una fila compuesta solo por metadatos no se presenta como datos agregados.
+
 ## Fórmulas y datos incompletos
 
 - Tasa de entrega: `entregados_unicos / intentados_unicos`, con denominador positivo y ambos valores confirmados.

@@ -56,9 +56,11 @@ def operacion(payload):
         raise ValueError('Se requiere un objeto con la lista periodos')
     results, seen = [], set()
     for row in payload['periodos']:
-        allowed = COUNTERS | {'inicio', 'fin', 'corte', 'fuente'}
-        if not isinstance(row, dict) or not set(row).issubset(allowed):
-            raise ValueError('Campos ajenos al contrato agregado')
+        metadata = {'inicio', 'fin', 'corte', 'fuente'}
+        allowed = COUNTERS | metadata
+        if (not isinstance(row, dict) or not metadata.issubset(row)
+                or not set(row).issubset(allowed)):
+            raise ValueError('Metadatos obligatorios ausentes o campos ajenos al contrato agregado')
         start, end, cutoff = (date.fromisoformat(row[k]) for k in ('inicio', 'fin', 'corte'))
         if start >= end or cutoff < end:
             raise ValueError('Período o fecha de corte inválidos')
@@ -66,9 +68,12 @@ def operacion(payload):
         if cohort in seen:
             raise ValueError('Período duplicado; revisar la exportación')
         seen.add(cohort)
-        if not isinstance(row.get('fuente'), str) or not row['fuente'].strip():
-            raise ValueError('Fuente agregada requerida')
+        if (not isinstance(row['fuente'], str) or not row['fuente'].strip()
+                or row['fuente'] != row['fuente'].strip()):
+            raise ValueError('Fuente agregada requerida sin espacios externos')
         values = {key: row.get(key) for key in COUNTERS}
+        if all(value is None for value in values.values()):
+            raise ValueError('Se requiere al menos un contador agregado')
         if any(v is not None and (type(v) is not int or v < 0) for v in values.values()):
             raise ValueError('Los contadores deben ser enteros no negativos o null')
         attempted, delivered = values['intentados_unicos'], values['entregados_unicos']

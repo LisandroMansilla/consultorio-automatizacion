@@ -46,7 +46,7 @@ Las pruebas del calculador usan fixtures identificados como sintéticos. Ninguno
 | Reducción de ausencias o tiempo ahorrado | Pendiente de una línea de base y una comparación válida. |
 | Disponibilidad sostenida | Pendiente de una ventana de monitoreo. |
 
-El [protocolo de medición](docs/MEDICION.md) define qué datos faltan. El script entrega `null` cuando no hay evidencia suficiente; el archivo de operación incluido es una plantilla vacía.
+El [protocolo de medición](docs/MEDICION.md) define qué datos faltan. El script entrega `null` cuando falta un contador necesario para una tasa, pero rechaza cohortes sin ningún contador, metadatos obligatorios o una fuente inequívoca. El archivo de operación incluido es una plantilla vacía.
 
 ## Reproducir los resultados
 
