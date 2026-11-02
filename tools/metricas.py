@@ -14,8 +14,9 @@ def recursos(path):
     with Path(path).open(newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         required = {'fecha', 'componente', 'muestra', 'cpu_pct', 'memoria_mib', 'evidencia'}
-        if set(reader.fieldnames or []) != required:
-            raise ValueError('Columnas de recursos distintas del contrato')
+        fieldnames = reader.fieldnames or []
+        if len(fieldnames) != len(required) or set(fieldnames) != required:
+            raise ValueError('Columnas de recursos distintas o duplicadas respecto del contrato')
         for row in reader:
             if set(row) != required or any(value is None for value in row.values()):
                 raise ValueError('Fila de recursos distinta del contrato')
@@ -49,6 +50,20 @@ def ratio(numerator, denominator):
     if numerator is None or denominator is None or denominator == 0:
         return None
     return numerator / denominator
+
+
+def object_without_duplicates(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f'Clave JSON duplicada: {key}')
+        result[key] = value
+    return result
+
+
+def cargar_json(path):
+    return json.loads(Path(path).read_text(encoding='utf-8'),
+                      object_pairs_hook=object_without_duplicates)
 
 
 def operacion(payload):
@@ -98,7 +113,7 @@ def main():
     parser.add_argument('archivo', type=Path)
     args = parser.parse_args()
     try:
-        result = recursos(args.archivo) if args.tipo == 'recursos' else operacion(json.loads(args.archivo.read_text(encoding='utf-8')))
+        result = recursos(args.archivo) if args.tipo == 'recursos' else operacion(cargar_json(args.archivo))
     except (ValueError, KeyError, TypeError, OSError) as exc:
         parser.error(str(exc))
     print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))

@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 02/11/2026
+
+Se corrigieron dos ambigüedades de entrada reproducibles: un CSV podía repetir un encabezado y conservar solo uno de sus valores, y el lector JSON estándar aceptaba claves repetidas tomando silenciosamente la última. El calculador ahora rechaza ambos casos antes de producir métricas; dos pruebas de regresión cubren los defectos.
+
+La validación sigue siendo local y estructural: no acredita la veracidad de una fuente. Las plantillas públicas continúan vacías, no se publicaron cifras históricas y no se accedió al sistema del Consultorio.
+
 ## 01/11/2026
 
 Se corrigió una ambigüedad del contrato de métricas operativas: una fila podía omitir metadatos, contener una fuente con espacios externos o no aportar ningún contador. El calculador ahora exige inicio, fin, corte y fuente inequívoca, y rechaza cohortes sin al menos un contador agregado. Una prueba de regresión cubre esos casos.

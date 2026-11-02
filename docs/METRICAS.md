@@ -18,6 +18,8 @@ Los contadores de recordatorios, entregas, asistencias y ausencias permanecen si
 
 Cada período operativo requiere inicio, fin, fecha de corte y una fuente inequívoca, además de al menos un contador agregado. El calculador rechaza una fila sin métricas en vez de clasificarla como datos proporcionados. Los contadores desconocidos dentro de una fila válida pueden conservarse como `null`.
 
-Para recursos, cada fila debe respetar exactamente las seis columnas de la plantilla. `componente`, `muestra` y `evidencia` son identificadores obligatorios y no admiten espacios externos; así se evita separar accidentalmente una misma serie o aceptar una muestra sin identidad. El calculador rechaza filas con columnas adicionales, muestras duplicadas, valores negativos o números no finitos.
+Para recursos, cada fila debe respetar exactamente las seis columnas de la plantilla. `componente`, `muestra` y `evidencia` son identificadores obligatorios y no admiten espacios externos; así se evita separar accidentalmente una misma serie o aceptar una muestra sin identidad. El calculador rechaza filas con columnas adicionales o encabezados duplicados, muestras duplicadas, valores negativos o números no finitos.
+
+Los objetos JSON con claves repetidas también se rechazan antes de calcular: no se acepta la elección silenciosa del último valor como evidencia inequívoca. Esta validación comprueba la estructura del archivo, no la veracidad de su fuente.
 
 El estado de la sesión de mensajería, la salud de un servicio y la entrega al destinatario son comprobaciones distintas. La validación estructural de un respaldo tampoco acredita por sí sola una restauración completa.

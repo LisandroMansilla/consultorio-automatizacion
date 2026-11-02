@@ -93,6 +93,23 @@ class MetricTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     metricas.recursos(p)
 
+    def test_duplicate_csv_header_is_rejected(self):
+        text = ('fecha,componente,muestra,cpu_pct,memoria_mib,evidencia,cpu_pct\n'
+                '2000-01-01,n8n,1,1,10,FIXTURE_SINTETICO,99\n')
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / 'duplicate-header.csv'; p.write_text(text)
+            with self.assertRaisesRegex(ValueError, 'duplicadas'):
+                metricas.recursos(p)
+
+    def test_duplicate_json_key_is_rejected(self):
+        text = ('{"periodos":[{"inicio":"2026-01-01","fin":"2026-02-01",'
+                '"corte":"2026-02-02","fuente":"FIXTURE_SINTETICO",'
+                '"intentados_unicos":4,"intentados_unicos":400}]}')
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / 'duplicate-key.json'; p.write_text(text)
+            with self.assertRaisesRegex(ValueError, 'intentados_unicos'):
+                metricas.cargar_json(p)
+
 
 if __name__ == '__main__':
     unittest.main()
