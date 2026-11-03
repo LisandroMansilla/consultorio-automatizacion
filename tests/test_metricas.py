@@ -110,6 +110,30 @@ class MetricTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'intentados_unicos'):
                 metricas.cargar_json(p)
 
+    def test_dates_require_canonical_calendar_format(self):
+        for field, value in [('inicio', '20260101'), ('inicio', '2026-W01-1'),
+                             ('fin', '2026-02-01T00:00:00'), ('corte', 20260202)]:
+            with self.subTest(field=field, value=value), self.assertRaisesRegex(ValueError, 'AAAA-MM-DD'):
+                metricas.operacion({'periodos': [example(**{field: value})]})
+        header = 'fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / 'non-canonical.csv'
+            p.write_text(header + '20000101,n8n,1,1,10,FIXTURE_SINTETICO\n')
+            with self.assertRaisesRegex(ValueError, 'AAAA-MM-DD'):
+                metricas.recursos(p)
+
+    def test_identifiers_reject_control_characters(self):
+        for source in ['FIXTURE\\nOTRA', 'FIXTURE\\tOTRA', 'FIXTURE\\x00OTRA']:
+            decoded = source.encode().decode('unicode_escape')
+            with self.subTest(source=source), self.assertRaisesRegex(ValueError, 'imprimible'):
+                metricas.operacion({'periodos': [example(fuente=decoded)]})
+        header = 'fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / 'control.csv'
+            p.write_text(header + '2000-01-01,n8n,"muestra\npartida",1,10,FIXTURE_SINTETICO\n')
+            with self.assertRaisesRegex(ValueError, 'imprimible'):
+                metricas.recursos(p)
+
 
 if __name__ == '__main__':
     unittest.main()

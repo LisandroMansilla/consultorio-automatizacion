@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 03/11/2026
+
+Se corrigieron dos ambigüedades del contrato de entrada. Python aceptaba fechas básicas sin guiones y semanas ISO aunque las plantillas usan fechas de calendario `AAAA-MM-DD`; además, una fuente o muestra podía contener saltos de línea, tabulaciones u otros caracteres de control. El calculador ahora exige fechas canónicas e identificadores imprimibles. Dos pruebas de regresión cubren recursos y períodos operativos.
+
+El cambio valida estructura local con datos sintéticos. Las plantillas públicas siguen vacías, no se incorporaron métricas operativas ni muestras históricas y no se accedió al VPS o al sistema del Consultorio.
+
 ## 02/11/2026
 
 Se corrigieron dos ambigüedades de entrada reproducibles: un CSV podía repetir un encabezado y conservar solo uno de sus valores, y el lector JSON estándar aceptaba claves repetidas tomando silenciosamente la última. El calculador ahora rechaza ambos casos antes de producir métricas; dos pruebas de regresión cubren los defectos.

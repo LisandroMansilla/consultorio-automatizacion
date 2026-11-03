@@ -8,6 +8,25 @@ import json
 import math
 
 
+def canonical_date(value, field):
+    if not isinstance(value, str):
+        raise ValueError(f'{field} debe usar AAAA-MM-DD')
+    try:
+        parsed = date.fromisoformat(value)
+    except ValueError as exc:
+        raise ValueError(f'{field} debe usar una fecha válida AAAA-MM-DD') from exc
+    if value != parsed.isoformat():
+        raise ValueError(f'{field} debe usar el formato canónico AAAA-MM-DD')
+    return parsed
+
+
+def identifier(value, field):
+    if (not isinstance(value, str) or not value.strip() or value != value.strip()
+            or not value.isprintable()):
+        raise ValueError(f'{field} debe ser un identificador imprimible no vacío sin espacios externos')
+    return value
+
+
 def recursos(path):
     groups = defaultdict(list)
     seen = set()
@@ -20,10 +39,9 @@ def recursos(path):
         for row in reader:
             if set(row) != required or any(value is None for value in row.values()):
                 raise ValueError('Fila de recursos distinta del contrato')
-            identifiers = (row['componente'], row['muestra'], row['evidencia'])
-            if any(not value.strip() or value != value.strip() for value in identifiers):
-                raise ValueError('Componente, muestra y evidencia deben ser identificadores no vacíos sin espacios externos')
-            date.fromisoformat(row['fecha'])
+            for field in ('componente', 'muestra', 'evidencia'):
+                identifier(row[field], field)
+            canonical_date(row['fecha'], 'fecha')
             key = (row['fecha'], row['componente'], row['muestra'])
             if key in seen:
                 raise ValueError('Muestra duplicada')
@@ -76,16 +94,14 @@ def operacion(payload):
         if (not isinstance(row, dict) or not metadata.issubset(row)
                 or not set(row).issubset(allowed)):
             raise ValueError('Metadatos obligatorios ausentes o campos ajenos al contrato agregado')
-        start, end, cutoff = (date.fromisoformat(row[k]) for k in ('inicio', 'fin', 'corte'))
+        start, end, cutoff = (canonical_date(row[k], k) for k in ('inicio', 'fin', 'corte'))
         if start >= end or cutoff < end:
             raise ValueError('Período o fecha de corte inválidos')
         cohort = (start, end)
         if cohort in seen:
             raise ValueError('Período duplicado; revisar la exportación')
         seen.add(cohort)
-        if (not isinstance(row['fuente'], str) or not row['fuente'].strip()
-                or row['fuente'] != row['fuente'].strip()):
-            raise ValueError('Fuente agregada requerida sin espacios externos')
+        identifier(row['fuente'], 'fuente')
         values = {key: row.get(key) for key in COUNTERS}
         if all(value is None for value in values.values()):
             raise ValueError('Se requiere al menos un contador agregado')
