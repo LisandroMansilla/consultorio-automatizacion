@@ -27,29 +27,45 @@ def identifier(value, field):
     return value
 
 
+def resource_number(value, field):
+    if (not isinstance(value, str) or not value or value != value.strip()
+            or not value.isprintable()):
+        raise ValueError(f'{field} debe ser un número imprimible sin espacios externos')
+    try:
+        number = float(value)
+    except ValueError as exc:
+        raise ValueError(f'{field} debe ser un número no negativo') from exc
+    if not math.isfinite(number) or number < 0:
+        raise ValueError(f'{field} debe ser un número finito no negativo')
+    return number
+
+
 def recursos(path):
     groups = defaultdict(list)
     seen = set()
-    with Path(path).open(newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        required = {'fecha', 'componente', 'muestra', 'cpu_pct', 'memoria_mib', 'evidencia'}
-        fieldnames = reader.fieldnames or []
-        if len(fieldnames) != len(required) or set(fieldnames) != required:
-            raise ValueError('Columnas de recursos distintas o duplicadas respecto del contrato')
-        for row in reader:
-            if set(row) != required or any(value is None for value in row.values()):
-                raise ValueError('Fila de recursos distinta del contrato')
-            for field in ('componente', 'muestra', 'evidencia'):
-                identifier(row[field], field)
-            canonical_date(row['fecha'], 'fecha')
-            key = (row['fecha'], row['componente'], row['muestra'])
-            if key in seen:
-                raise ValueError('Muestra duplicada')
-            seen.add(key)
-            cpu, memory = float(row['cpu_pct']), float(row['memoria_mib'])
-            if not all(math.isfinite(x) and x >= 0 for x in (cpu, memory)):
-                raise ValueError('Recurso negativo o no finito')
-            groups[(row['fecha'], row['componente'], row['evidencia'])].append((cpu, memory))
+    try:
+        with Path(path).open(newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f, strict=True)
+            rows = list(reader)
+            fieldnames = reader.fieldnames or []
+    except csv.Error as exc:
+        raise ValueError('CSV de recursos malformado') from exc
+    required = {'fecha', 'componente', 'muestra', 'cpu_pct', 'memoria_mib', 'evidencia'}
+    if len(fieldnames) != len(required) or set(fieldnames) != required:
+        raise ValueError('Columnas de recursos distintas o duplicadas respecto del contrato')
+    for row in rows:
+        if set(row) != required or any(value is None for value in row.values()):
+            raise ValueError('Fila de recursos distinta del contrato')
+        for field in ('componente', 'muestra', 'evidencia'):
+            identifier(row[field], field)
+        canonical_date(row['fecha'], 'fecha')
+        key = (row['fecha'], row['componente'], row['muestra'])
+        if key in seen:
+            raise ValueError('Muestra duplicada')
+        seen.add(key)
+        cpu = resource_number(row['cpu_pct'], 'cpu_pct')
+        memory = resource_number(row['memoria_mib'], 'memoria_mib')
+        groups[(row['fecha'], row['componente'], row['evidencia'])].append((cpu, memory))
     result = []
     for (day, component, source), values in sorted(groups.items()):
         result.append({'fecha': day, 'componente': component, 'evidencia': source,

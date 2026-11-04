@@ -134,6 +134,27 @@ class MetricTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'imprimible'):
                 metricas.recursos(p)
 
+    def test_resource_numbers_reject_external_spaces_and_controls(self):
+        header = 'fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
+        invalid_rows = [
+            '2000-01-01,n8n,1," 1",10,FIXTURE_SINTETICO\n',
+            '2000-01-01,n8n,1,1,"10 ",FIXTURE_SINTETICO\n',
+            '2000-01-01,n8n,1,"1\n",10,FIXTURE_SINTETICO\n',
+        ]
+        for body in invalid_rows:
+            with self.subTest(body=body), tempfile.TemporaryDirectory() as d:
+                p = Path(d) / 'ambiguous-number.csv'; p.write_text(header + body)
+                with self.assertRaisesRegex(ValueError, 'sin espacios externos'):
+                    metricas.recursos(p)
+
+    def test_malformed_resource_csv_is_rejected(self):
+        text = ('fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
+                '2000-01-01,n8n,1,"1,10,FIXTURE_SINTETICO\n')
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / 'malformed.csv'; p.write_text(text)
+            with self.assertRaisesRegex(ValueError, 'malformado'):
+                metricas.recursos(p)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,7 +20,7 @@ El estado `WORKING` observado en WAHA describe la sesión. Una respuesta de salu
 
 Una prueba de integridad de un archivo comprimido confirma que el archivo puede comprobarse estructuralmente. La restauración completa de la aplicación requiere otro procedimiento y no se presenta como validada a partir de esa prueba.
 
-Los recursos se analizaron a partir de muestras de `docker stats`. Sus rangos se publican con fecha y tamaño de muestra. Los valores permiten documentar el diagnóstico histórico, pero no son un benchmark ni acreditan una optimización posterior.
+Los recursos se analizaron a partir de muestras históricas de `docker stats`, conservadas fuera del repositorio. No se distribuyen esas muestras ni sus rangos en la versión pública actual; las plantillas incluidas permanecen vacías. Una eventual publicación debe declarar fecha, fuente, unidades y cantidad de muestras, y no convertir observaciones puntuales en un benchmark o una mejora de rendimiento.
 
 ## Próximas evidencias útiles
 

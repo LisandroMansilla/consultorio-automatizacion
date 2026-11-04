@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 04/11/2026
+
+Se endureció la lectura de recursos para rechazar CSV malformados y celdas numéricas con espacios externos o caracteres de control que `float()` normalizaba silenciosamente. Dos pruebas de regresión cubren las entradas ambiguas y elevan la suite a quince pruebas.
+
+También se corrigió una afirmación del caso técnico: las muestras históricas de recursos y sus rangos no están publicados en este repositorio. Las plantillas siguen vacías y el cambio no incorpora cifras privadas, no accede al VPS y no modifica el sistema operativo del Consultorio.
+
 ## 03/11/2026
 
 Se corrigieron dos ambigüedades del contrato de entrada. Python aceptaba fechas básicas sin guiones y semanas ISO aunque las plantillas usan fechas de calendario `AAAA-MM-DD`; además, una fuente o muestra podía contener saltos de línea, tabulaciones u otros caracteres de control. El calculador ahora exige fechas canónicas e identificadores imprimibles. Dos pruebas de regresión cubren recursos y períodos operativos.
