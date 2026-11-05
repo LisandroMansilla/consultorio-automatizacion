@@ -46,7 +46,7 @@ Las pruebas del calculador usan fixtures identificados como sintéticos. Ninguno
 | Reducción de ausencias o tiempo ahorrado | Pendiente de una línea de base y una comparación válida. |
 | Disponibilidad sostenida | Pendiente de una ventana de monitoreo. |
 
-El [protocolo de medición](docs/MEDICION.md) define qué datos faltan. El script entrega `null` cuando falta un contador necesario para una tasa, pero rechaza cohortes sin ningún contador, metadatos obligatorios, fechas fuera del formato canónico `AAAA-MM-DD`, identificadores con caracteres de control o archivos con claves y columnas duplicadas. El archivo de operación incluido es una plantilla vacía.
+El [protocolo de medición](docs/MEDICION.md) define qué datos faltan. La salida conserva para cada tasa su valor, unidad, numerador y denominador exactos en `trazabilidad_tasas`; los campos escalares anteriores se mantienen para compatibilidad. El script entrega `null` cuando falta un contador necesario o el denominador es cero, pero rechaza cohortes sin ningún contador, metadatos obligatorios, fechas fuera del formato canónico `AAAA-MM-DD`, identificadores con caracteres de control o archivos con claves y columnas duplicadas. El archivo de operación incluido es una plantilla vacía.
 
 ## Reproducir los resultados
 
@@ -68,3 +68,4 @@ El workflow de GitHub Actions ejecuta estas comprobaciones. Las herramientas pro
 - [Evolución](docs/PROGRESO.md): cambios y próximos pasos comprobables.
 
 No se eligió una licencia abierta para este proyecto.
+

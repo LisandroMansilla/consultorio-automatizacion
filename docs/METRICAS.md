@@ -18,6 +18,8 @@ Los contadores de recordatorios, entregas, asistencias y ausencias permanecen si
 
 Cada período operativo requiere inicio, fin, fecha de corte y una fuente inequívoca, además de al menos un contador agregado. El calculador rechaza una fila sin métricas en vez de clasificarla como datos proporcionados. Los contadores desconocidos dentro de una fila válida pueden conservarse como `null`.
 
+La salida de operación registra cada tasa con su unidad, numerador y denominador en `trazabilidad_tasas`. La unidad es `proporcion_0_a_1`; no se etiqueta el valor como porcentaje ni se oculta un denominador cero. Los campos escalares se conservan para compatibilidad y las pruebas comprueban que coincidan con la trazabilidad.
+
 Para recursos, cada fila debe respetar exactamente las seis columnas de la plantilla y usar una fecha de calendario canónica `AAAA-MM-DD`. `componente`, `muestra` y `evidencia` son identificadores imprimibles obligatorios: no admiten espacios externos, saltos de línea, tabulaciones ni otros caracteres de control. `cpu_pct` y `memoria_mib` deben ser números finitos no negativos, imprimibles y sin espacios externos. Así se evita separar accidentalmente una misma serie o aceptar celdas que un lector pueda normalizar de forma silenciosa.
 
 El calculador rechaza CSV malformados, filas con columnas adicionales o encabezados duplicados, muestras duplicadas, valores negativos y números no finitos. Los objetos JSON con claves repetidas también se rechazan antes de calcular: no se acepta la elección silenciosa del último valor como evidencia inequívoca. Esta validación comprueba la estructura del archivo, no la veracidad de su fuente.
@@ -25,3 +27,4 @@ El calculador rechaza CSV malformados, filas con columnas adicionales o encabeza
 Las fechas de operación (`inicio`, `fin` y `corte`) usan el mismo formato canónico `AAAA-MM-DD`. Se rechazan formatos alternativos que Python podría interpretar, como fechas básicas sin guiones o semanas ISO, para que la entrada publicada y su período no dependan de una interpretación implícita.
 
 El estado de la sesión de mensajería, la salud de un servicio y la entrega al destinatario son comprobaciones distintas. La validación estructural de un respaldo tampoco acredita por sí sola una restauración completa.
+

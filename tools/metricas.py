@@ -86,6 +86,16 @@ def ratio(numerator, denominator):
     return numerator / denominator
 
 
+def traced_ratio(numerator_name, numerator, denominator_name, denominator):
+    """Keep a rate tied to the exact counters used to calculate it."""
+    return {
+        'valor': ratio(numerator, denominator),
+        'unidad': 'proporcion_0_a_1',
+        'numerador': {'campo': numerator_name, 'valor': numerator},
+        'denominador': {'campo': denominator_name, 'valor': denominator},
+    }
+
+
 def object_without_duplicates(pairs):
     result = {}
     for key, value in pairs:
@@ -131,11 +141,20 @@ def operacion(payload):
         if expired is not None and known_results > expired:
             raise ValueError('Resultados clasificados superan turnos vencidos')
         classified = present + absent if present is not None and absent is not None else None
+        traced_rates = {
+            'tasa_entrega': traced_ratio(
+                'entregados_unicos', delivered, 'intentados_unicos', attempted),
+            'tasa_ausencias_sobre_clasificados': traced_ratio(
+                'ausencias', absent, 'asistencias + ausencias', classified),
+            'cobertura_clasificacion': traced_ratio(
+                'asistencias + ausencias', classified, 'turnos_vencidos', expired),
+        }
         results.append({'inicio': row['inicio'], 'fin': row['fin'], 'corte': row['corte'],
                         'fuente': row['fuente'], 'contadores': values,
                         'tasa_entrega': ratio(delivered, attempted),
                         'tasa_ausencias_sobre_clasificados': ratio(absent, classified),
-                        'cobertura_clasificacion': ratio(classified, expired)})
+                        'cobertura_clasificacion': ratio(classified, expired),
+                        'trazabilidad_tasas': traced_rates})
     return {'estado': 'datos_agregados_proporcionados' if results else 'sin_datos', 'periodos': results}
 
 
@@ -153,3 +172,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

@@ -39,6 +39,20 @@ class MetricTests(unittest.TestCase):
         self.assertEqual(row['tasa_ausencias_sobre_clasificados'], .25)
         self.assertEqual(row['cobertura_clasificacion'], .8)
 
+        trace = row['trazabilidad_tasas']
+        self.assertEqual(trace['tasa_entrega'], {
+            'valor': .75,
+            'unidad': 'proporcion_0_a_1',
+            'numerador': {'campo': 'entregados_unicos', 'valor': 3},
+            'denominador': {'campo': 'intentados_unicos', 'valor': 4},
+        })
+        self.assertEqual(
+            trace['tasa_ausencias_sobre_clasificados']['denominador'],
+            {'campo': 'asistencias + ausencias', 'valor': 4})
+        self.assertEqual(
+            trace['cobertura_clasificacion']['numerador'],
+            {'campo': 'asistencias + ausencias', 'valor': 4})
+
     def test_missing_and_zero_are_not_invented_rates(self):
         for changes in [{'entregados_unicos': None}, {'intentados_unicos': 0, 'entregados_unicos': 0}]:
             row = metricas.operacion({'periodos': [example(**changes)]})['periodos'][0]
@@ -46,6 +60,19 @@ class MetricTests(unittest.TestCase):
         row = metricas.operacion({'periodos': [example(asistencias=0, ausencias=0)]})['periodos'][0]
         self.assertIsNone(row['tasa_ausencias_sobre_clasificados'])
         self.assertEqual(row['cobertura_clasificacion'], 0)
+
+    def test_rate_trace_preserves_missing_and_zero_denominators(self):
+        missing = metricas.operacion({'periodos': [example(entregados_unicos=None)]})['periodos'][0]
+        delivery = missing['trazabilidad_tasas']['tasa_entrega']
+        self.assertIsNone(delivery['valor'])
+        self.assertEqual(delivery['numerador']['valor'], None)
+        self.assertEqual(delivery['denominador']['valor'], 4)
+
+        zero = metricas.operacion({
+            'periodos': [example(intentados_unicos=0, entregados_unicos=0)]
+        })['periodos'][0]['trazabilidad_tasas']['tasa_entrega']
+        self.assertIsNone(zero['valor'])
+        self.assertEqual(zero['denominador'], {'campo': 'intentados_unicos', 'valor': 0})
 
     def test_inconsistent_counts_are_rejected(self):
         for changes in [{'entregados_unicos': 5}, {'asistencias': 6, 'ausencias': None},
@@ -158,3 +185,4 @@ class MetricTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 05/11/2026
+
+Se hizo explícita la trazabilidad de las tasas operativas: cada resultado ahora declara unidad, numerador y denominador con sus valores, además de conservar los campos escalares anteriores. Cuando falta un contador o el denominador es cero, la tasa sigue siendo `null` y la salida muestra qué operando faltó o valió cero.
+
+Una regresión nueva comprueba los casos incompletos y con denominador cero; la suite suma dieciséis pruebas. El cambio usa exclusivamente fixtures sintéticos y plantillas vacías. No publica métricas operativas ni muestras históricas y no accede al VPS, contenedores, workflows o datos del Consultorio.
+
 ## 04/11/2026
 
 Se endureció la lectura de recursos para rechazar CSV malformados y celdas numéricas con espacios externos o caracteres de control que `float()` normalizaba silenciosamente. Dos pruebas de regresión cubren las entradas ambiguas y elevan la suite a quince pruebas.
@@ -40,3 +46,4 @@ El trabajo se limita a documentación y cálculo local. No se accedió al VPS, n
 2. Registrar período, fuente y fecha de corte para cada indicador real.
 3. Obtener una exportación agregada verificable de entregas y resultados de turnos.
 4. Medir una línea de base antes de afirmar ahorro o reducción de ausencias.
+
