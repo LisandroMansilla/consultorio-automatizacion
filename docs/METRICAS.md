@@ -20,6 +20,8 @@ Cada período operativo requiere inicio, fin, fecha de corte y una fuente inequ�
 
 La salida de operación registra cada tasa con su unidad, numerador y denominador en `trazabilidad_tasas`. La unidad es `proporcion_0_a_1`; no se etiqueta el valor como porcentaje ni se oculta un denominador cero. Los campos escalares se conservan para compatibilidad y las pruebas comprueban que coincidan con la trazabilidad.
 
+La salida de recursos aplica el mismo criterio en `trazabilidad_metricas`: cada rango de CPU y memoria declara unidad, mínimo, máximo, cantidad de muestras, fecha y fuente. CPU usa `porcentaje_reportado` porque conserva el valor entregado por la fuente sin reinterpretarlo como porcentaje normalizado; memoria usa `MiB`. Los campos escalares anteriores continúan disponibles para compatibilidad.
+
 Para recursos, cada fila debe respetar exactamente las seis columnas de la plantilla y usar una fecha de calendario canónica `AAAA-MM-DD`. `componente`, `muestra` y `evidencia` son identificadores imprimibles obligatorios: no admiten espacios externos, saltos de línea, tabulaciones ni otros caracteres de control. `cpu_pct` y `memoria_mib` deben ser números finitos no negativos, imprimibles y sin espacios externos. Así se evita separar accidentalmente una misma serie o aceptar celdas que un lector pueda normalizar de forma silenciosa.
 
 El calculador rechaza CSV malformados, filas con columnas adicionales o encabezados duplicados, muestras duplicadas, valores negativos y números no finitos. Los objetos JSON con claves repetidas también se rechazan antes de calcular: no se acepta la elección silenciosa del último valor como evidencia inequívoca. Esta validación comprueba la estructura del archivo, no la veracidad de su fuente.

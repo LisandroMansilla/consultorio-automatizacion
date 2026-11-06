@@ -36,6 +36,8 @@ El repositorio incluye un calculador de recursos y contadores agregados. Los arc
 
 Las pruebas del calculador usan fixtures identificados como sintéticos. Ninguno de sus valores representa pacientes, entregas o rendimiento real del Consultorio.
 
+Los rangos de recursos incluyen una sección `trazabilidad_metricas` con unidad, mínimo, máximo, cantidad de muestras, fecha y fuente. Se mantienen los campos escalares anteriores para consumidores existentes.
+
 ## Indicadores de operación
 
 | Indicador | Estado |

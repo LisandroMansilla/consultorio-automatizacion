@@ -30,6 +30,32 @@ class MetricTests(unittest.TestCase):
         self.assertEqual((row['memoria_mib_min'], row['memoria_mib_max']), (10, 20))
         self.assertEqual((row['cpu_pct_min'], row['cpu_pct_max']), (1, 3))
 
+    def test_resource_ranges_declare_units_samples_date_and_source(self):
+        header = 'fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
+        body = ('2000-01-01,n8n,1,1,10,FIXTURE_SINTETICO\n'
+                '2000-01-01,n8n,2,3,20,FIXTURE_SINTETICO\n')
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / 'synthetic.csv'; p.write_text(header + body)
+            row = metricas.recursos(p)['componentes'][0]
+
+        trace = row['trazabilidad_metricas']
+        self.assertEqual(trace['cpu'], {
+            'unidad': 'porcentaje_reportado',
+            'minimo': 1,
+            'maximo': 3,
+            'muestras': 2,
+            'fecha': '2000-01-01',
+            'fuente': 'FIXTURE_SINTETICO',
+        })
+        self.assertEqual(trace['memoria'], {
+            'unidad': 'MiB',
+            'minimo': 10,
+            'maximo': 20,
+            'muestras': 2,
+            'fecha': '2000-01-01',
+            'fuente': 'FIXTURE_SINTETICO',
+        })
+
     def test_no_operational_data_is_explicit(self):
         self.assertEqual(metricas.operacion({'periodos': []}), {'estado': 'sin_datos', 'periodos': []})
 

@@ -40,6 +40,18 @@ def resource_number(value, field):
     return number
 
 
+def traced_range(unit, minimum, maximum, samples, day, source):
+    """Describe a resource range without detaching it from its evidence."""
+    return {
+        'unidad': unit,
+        'minimo': minimum,
+        'maximo': maximum,
+        'muestras': samples,
+        'fecha': day,
+        'fuente': source,
+    }
+
+
 def recursos(path):
     groups = defaultdict(list)
     seen = set()
@@ -68,12 +80,25 @@ def recursos(path):
         groups[(row['fecha'], row['componente'], row['evidencia'])].append((cpu, memory))
     result = []
     for (day, component, source), values in sorted(groups.items()):
-        result.append({'fecha': day, 'componente': component, 'evidencia': source,
-                       'muestras': len(values),
-                       'cpu_pct_min': min(x[0] for x in values),
-                       'cpu_pct_max': max(x[0] for x in values),
-                       'memoria_mib_min': min(x[1] for x in values),
-                       'memoria_mib_max': max(x[1] for x in values)})
+        samples = len(values)
+        cpu_min, cpu_max = min(x[0] for x in values), max(x[0] for x in values)
+        memory_min, memory_max = min(x[1] for x in values), max(x[1] for x in values)
+        result.append({
+            'fecha': day,
+            'componente': component,
+            'evidencia': source,
+            'muestras': samples,
+            'cpu_pct_min': cpu_min,
+            'cpu_pct_max': cpu_max,
+            'memoria_mib_min': memory_min,
+            'memoria_mib_max': memory_max,
+            'trazabilidad_metricas': {
+                'cpu': traced_range(
+                    'porcentaje_reportado', cpu_min, cpu_max, samples, day, source),
+                'memoria': traced_range(
+                    'MiB', memory_min, memory_max, samples, day, source),
+            },
+        })
     return {'estado': 'muestras_proporcionadas' if result else 'sin_datos', 'componentes': result}
 
 

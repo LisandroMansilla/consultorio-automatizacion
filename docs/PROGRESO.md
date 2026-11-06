@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 06/11/2026
+
+Se hizo explícita la trazabilidad de los rangos de recursos: cada resultado de CPU y memoria ahora declara unidad, mínimo, máximo, cantidad de muestras, fecha y fuente en `trazabilidad_metricas`. Los campos escalares anteriores se conservan para compatibilidad.
+
+Una regresión nueva comprueba el contrato completo y eleva la suite a diecisiete pruebas. El cambio usa únicamente un fixture sintético; las plantillas públicas siguen vacías. No publica las muestras históricas ni accede al VPS, contenedores, workflows operativos o datos del Consultorio.
+
 ## 05/11/2026
 
 Se hizo explícita la trazabilidad de las tasas operativas: cada resultado ahora declara unidad, numerador y denominador con sus valores, además de conservar los campos escalares anteriores. Cuando falta un contador o el denominador es cero, la tasa sigue siendo `null` y la salida muestra qué operando faltó o valió cero.
