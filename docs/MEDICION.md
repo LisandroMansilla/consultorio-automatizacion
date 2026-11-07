@@ -33,7 +33,7 @@ Los cuatro metadatos (`inicio`, `fin`, `corte` y `fuente`) son obligatorios. `fu
 
 Los campos faltantes y los denominadores cero producen `null`, no una tasa de 0 %. El verificador rechaza contadores negativos, booleanos, entregas superiores a intentos y resultados clasificados superiores al total de turnos vencidos.
 
-La salida mantiene los tres campos escalares de tasa y agrega `trazabilidad_tasas`. Cada entrada de trazabilidad declara `valor`, unidad `proporcion_0_a_1`, y el nombre y valor del numerador y del denominador usados. Si falta un contador o el denominador es cero, `valor` queda en `null` y los operandos disponibles permanecen visibles; así un consumidor no necesita inferir la fórmula ni confundir una proporción con un porcentaje.
+La salida mantiene los tres campos escalares de tasa y agrega `trazabilidad_tasas`. Cada entrada de trazabilidad declara `valor`, `estado`, unidad `proporcion_0_a_1`, y el nombre y valor del numerador y del denominador usados. `estado` vale `calculada`, `datos_incompletos` o `denominador_cero`. En los dos últimos casos, `valor` queda en `null` y los operandos disponibles permanecen visibles; así un consumidor no necesita inferir la fórmula, confundir ausencia de datos con una tasa de 0 % ni interpretar un cociente indefinido.
 
 ## Comparaciones de impacto
 

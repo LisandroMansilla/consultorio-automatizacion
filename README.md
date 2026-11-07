@@ -48,7 +48,7 @@ Los rangos de recursos incluyen una sección `trazabilidad_metricas` con unidad,
 | Reducción de ausencias o tiempo ahorrado | Pendiente de una línea de base y una comparación válida. |
 | Disponibilidad sostenida | Pendiente de una ventana de monitoreo. |
 
-El [protocolo de medición](docs/MEDICION.md) define qué datos faltan. La salida conserva para cada tasa su valor, unidad, numerador y denominador exactos en `trazabilidad_tasas`; los campos escalares anteriores se mantienen para compatibilidad. El script entrega `null` cuando falta un contador necesario o el denominador es cero, pero rechaza cohortes sin ningún contador, metadatos obligatorios, fechas fuera del formato canónico `AAAA-MM-DD`, identificadores con caracteres de control o archivos con claves y columnas duplicadas. El archivo de operación incluido es una plantilla vacía.
+El [protocolo de medición](docs/MEDICION.md) define qué datos faltan. La salida conserva para cada tasa su valor, estado, unidad, numerador y denominador exactos en `trazabilidad_tasas`; los campos escalares anteriores se mantienen para compatibilidad. El estado distingue una tasa calculada, datos incompletos y un denominador cero. El script entrega `null` en los dos últimos casos, pero rechaza cohortes sin ningún contador, metadatos obligatorios, fechas fuera del formato canónico `AAAA-MM-DD`, identificadores con caracteres de control o archivos con claves y columnas duplicadas. El archivo de operación incluido es una plantilla vacía.
 
 ## Reproducir los resultados
 

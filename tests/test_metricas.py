@@ -68,6 +68,7 @@ class MetricTests(unittest.TestCase):
         trace = row['trazabilidad_tasas']
         self.assertEqual(trace['tasa_entrega'], {
             'valor': .75,
+            'estado': 'calculada',
             'unidad': 'proporcion_0_a_1',
             'numerador': {'campo': 'entregados_unicos', 'valor': 3},
             'denominador': {'campo': 'intentados_unicos', 'valor': 4},
@@ -99,6 +100,17 @@ class MetricTests(unittest.TestCase):
         })['periodos'][0]['trazabilidad_tasas']['tasa_entrega']
         self.assertIsNone(zero['valor'])
         self.assertEqual(zero['denominador'], {'campo': 'intentados_unicos', 'valor': 0})
+
+    def test_rate_trace_distinguishes_missing_data_from_zero_denominator(self):
+        missing = metricas.operacion({
+            'periodos': [example(entregados_unicos=None)]
+        })['periodos'][0]['trazabilidad_tasas']['tasa_entrega']
+        zero = metricas.operacion({
+            'periodos': [example(intentados_unicos=0, entregados_unicos=0)]
+        })['periodos'][0]['trazabilidad_tasas']['tasa_entrega']
+
+        self.assertEqual(missing['estado'], 'datos_incompletos')
+        self.assertEqual(zero['estado'], 'denominador_cero')
 
     def test_inconsistent_counts_are_rejected(self):
         for changes in [{'entregados_unicos': 5}, {'asistencias': 6, 'ausencias': None},

@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 07/11/2026
+
+Se hizo explícito por qué una tasa operativa queda en `null`. Cada entrada de `trazabilidad_tasas` ahora declara el estado `calculada`, `datos_incompletos` o `denominador_cero`, además de conservar sus operandos, unidad y valor. Los campos escalares anteriores se mantienen para compatibilidad.
+
+Una regresión nueva distingue datos faltantes de un denominador cero y eleva la suite a dieciocho pruebas. El cambio usa únicamente fixtures sintéticos; las plantillas públicas siguen vacías. No publica muestras históricas, métricas operativas ni datos reales, y no accede al VPS, contenedores o workflows del Consultorio.
+
 ## 06/11/2026
 
 Se hizo explícita la trazabilidad de los rangos de recursos: cada resultado de CPU y memoria ahora declara unidad, mínimo, máximo, cantidad de muestras, fecha y fuente en `trazabilidad_metricas`. Los campos escalares anteriores se conservan para compatibilidad.

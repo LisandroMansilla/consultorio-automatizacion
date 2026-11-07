@@ -113,8 +113,16 @@ def ratio(numerator, denominator):
 
 def traced_ratio(numerator_name, numerator, denominator_name, denominator):
     """Keep a rate tied to the exact counters used to calculate it."""
+    value = ratio(numerator, denominator)
+    if value is not None:
+        status = 'calculada'
+    elif denominator == 0:
+        status = 'denominador_cero'
+    else:
+        status = 'datos_incompletos'
     return {
-        'valor': ratio(numerator, denominator),
+        'valor': value,
+        'estado': status,
         'unidad': 'proporcion_0_a_1',
         'numerador': {'campo': numerator_name, 'valor': numerator},
         'denominador': {'campo': denominator_name, 'valor': denominator},

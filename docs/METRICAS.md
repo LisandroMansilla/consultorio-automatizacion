@@ -18,7 +18,7 @@ Los contadores de recordatorios, entregas, asistencias y ausencias permanecen si
 
 Cada período operativo requiere inicio, fin, fecha de corte y una fuente inequívoca, además de al menos un contador agregado. El calculador rechaza una fila sin métricas en vez de clasificarla como datos proporcionados. Los contadores desconocidos dentro de una fila válida pueden conservarse como `null`.
 
-La salida de operación registra cada tasa con su unidad, numerador y denominador en `trazabilidad_tasas`. La unidad es `proporcion_0_a_1`; no se etiqueta el valor como porcentaje ni se oculta un denominador cero. Los campos escalares se conservan para compatibilidad y las pruebas comprueban que coincidan con la trazabilidad.
+La salida de operación registra cada tasa con su estado, unidad, numerador y denominador en `trazabilidad_tasas`. La unidad es `proporcion_0_a_1`; no se etiqueta el valor como porcentaje. El estado distingue `calculada`, `datos_incompletos` y `denominador_cero`, sin ocultar el motivo de un valor `null`. Los campos escalares se conservan para compatibilidad y las pruebas comprueban que coincidan con la trazabilidad.
 
 La salida de recursos aplica el mismo criterio en `trazabilidad_metricas`: cada rango de CPU y memoria declara unidad, mínimo, máximo, cantidad de muestras, fecha y fuente. CPU usa `porcentaje_reportado` porque conserva el valor entregado por la fuente sin reinterpretarlo como porcentaje normalizado; memoria usa `MiB`. Los campos escalares anteriores continúan disponibles para compatibilidad.
 
