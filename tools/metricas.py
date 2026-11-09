@@ -102,7 +102,13 @@ def recursos(path):
     return {'estado': 'muestras_proporcionadas' if result else 'sin_datos', 'componentes': result}
 
 
-COUNTERS = {'intentados_unicos', 'entregados_unicos', 'asistencias', 'ausencias', 'turnos_vencidos'}
+COUNTERS = (
+    'intentados_unicos',
+    'entregados_unicos',
+    'asistencias',
+    'ausencias',
+    'turnos_vencidos',
+)
 
 
 def ratio(numerator, denominator):
@@ -149,7 +155,7 @@ def operacion(payload):
     results, seen = [], set()
     for row in payload['periodos']:
         metadata = {'inicio', 'fin', 'corte', 'fuente'}
-        allowed = COUNTERS | metadata
+        allowed = set(COUNTERS) | metadata
         if (not isinstance(row, dict) or not metadata.issubset(row)
                 or not set(row).issubset(allowed)):
             raise ValueError('Metadatos obligatorios ausentes o campos ajenos al contrato agregado')

@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 09/11/2026
+
+Se corrigió una falta de determinismo reproducible: los cinco contadores operativos se recorrían desde un conjunto de Python, por lo que procesos con distintas semillas de hash podían emitir el mismo resultado en diferente orden. El contrato ahora conserva un orden explícito y estable.
+
+Una regresión ejecuta el comando completo en cuatro procesos con semillas distintas, compara la salida byte a byte y verifica el orden documentado. La suite suma diecinueve pruebas. El cambio usa un fixture sintético y no altera fórmulas, valores, plantillas o sistemas operativos.
+
 ## 07/11/2026
 
 Se hizo explícito por qué una tasa operativa queda en `null`. Cada entrada de `trazabilidad_tasas` ahora declara el estado `calculada`, `datos_incompletos` o `denominador_cero`, además de conservar sus operandos, unidad y valor. Los campos escalares anteriores se mantienen para compatibilidad.

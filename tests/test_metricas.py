@@ -1,6 +1,10 @@
 """Tests of this metric calculator; fixtures are not operational clinic results."""
 from pathlib import Path
 import importlib.util
+import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -79,6 +83,24 @@ class MetricTests(unittest.TestCase):
         self.assertEqual(
             trace['cobertura_clasificacion']['numerador'],
             {'campo': 'asistencias + ausencias', 'valor': 4})
+
+    def test_cli_output_is_deterministic_across_hash_seeds(self):
+        payload = {'periodos': [example()]}
+        outputs = []
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'synthetic.json'
+            path.write_text(json.dumps(payload))
+            for seed in ('1', '2', '3', '4'):
+                env = {**os.environ, 'PYTHONHASHSEED': seed}
+                outputs.append(subprocess.check_output(
+                    [sys.executable, ROOT / 'tools/metricas.py', 'operacion', path],
+                    env=env,
+                    text=True,
+                ))
+
+        self.assertEqual(outputs, [outputs[0]] * len(outputs))
+        counters = json.loads(outputs[0])['periodos'][0]['contadores']
+        self.assertEqual(list(counters), list(metricas.COUNTERS))
 
     def test_missing_and_zero_are_not_invented_rates(self):
         for changes in [{'entregados_unicos': None}, {'intentados_unicos': 0, 'entregados_unicos': 0}]:

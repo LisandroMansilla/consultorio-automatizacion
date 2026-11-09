@@ -38,6 +38,8 @@ Las pruebas del calculador usan fixtures identificados como sintéticos. Ninguno
 
 Los rangos de recursos incluyen una sección `trazabilidad_metricas` con unidad, mínimo, máximo, cantidad de muestras, fecha y fuente. Se mantienen los campos escalares anteriores para consumidores existentes.
 
+La salida JSON conserva un orden estable de contadores entre procesos para que dos ejecuciones sobre la misma entrada sean comparables byte a byte.
+
 ## Indicadores de operación
 
 | Indicador | Estado |
