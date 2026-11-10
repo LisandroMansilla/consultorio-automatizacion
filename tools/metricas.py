@@ -48,6 +48,8 @@ def traced_range(unit, minimum, maximum, samples, day, source):
         'maximo': maximum,
         'muestras': samples,
         'fecha': day,
+        'periodo': {'tipo': 'fecha_calendario', 'fecha': day},
+        'denominador': None,
         'fuente': source,
     }
 

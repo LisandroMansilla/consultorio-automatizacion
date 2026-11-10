@@ -1,5 +1,11 @@
 # Avances y siguientes pasos
 
+## 10/11/2026
+
+Se completó el contrato de trazabilidad de recursos: cada rango de CPU y memoria ahora declara el período de medición y un denominador explícito. El período identifica las muestras puntuales de la fecha registrada; el denominador queda en `null` porque mínimo y máximo no son tasas.
+
+Una regresión recorre todas las métricas de recursos y exige ambos campos. La suite suma veinte pruebas y conserva los campos anteriores para compatibilidad. El cambio usa únicamente un fixture sintético; las plantillas públicas siguen vacías. No publica las muestras históricas ni accede al VPS, contenedores, workflows operativos o datos del Consultorio.
+
 ## 09/11/2026
 
 Se corrigió una falta de determinismo reproducible: los cinco contadores operativos se recorrían desde un conjunto de Python, por lo que procesos con distintas semillas de hash podían emitir el mismo resultado en diferente orden. El contrato ahora conserva un orden explícito y estable.

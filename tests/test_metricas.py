@@ -49,6 +49,8 @@ class MetricTests(unittest.TestCase):
             'maximo': 3,
             'muestras': 2,
             'fecha': '2000-01-01',
+            'periodo': {'tipo': 'fecha_calendario', 'fecha': '2000-01-01'},
+            'denominador': None,
             'fuente': 'FIXTURE_SINTETICO',
         })
         self.assertEqual(trace['memoria'], {
@@ -57,8 +59,26 @@ class MetricTests(unittest.TestCase):
             'maximo': 20,
             'muestras': 2,
             'fecha': '2000-01-01',
+            'periodo': {'tipo': 'fecha_calendario', 'fecha': '2000-01-01'},
+            'denominador': None,
             'fuente': 'FIXTURE_SINTETICO',
         })
+
+    def test_every_resource_metric_declares_period_and_denominator(self):
+        header = 'fecha,componente,muestra,cpu_pct,memoria_mib,evidencia\n'
+        body = '2000-01-01,n8n,1,1,10,FIXTURE_SINTETICO\n'
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'synthetic.csv'
+            path.write_text(header + body)
+            trace = metricas.recursos(path)['componentes'][0]['trazabilidad_metricas']
+
+        for name, metric in trace.items():
+            with self.subTest(metric=name):
+                self.assertEqual(metric['periodo'], {
+                    'tipo': 'fecha_calendario',
+                    'fecha': '2000-01-01',
+                })
+                self.assertIsNone(metric['denominador'])
 
     def test_no_operational_data_is_explicit(self):
         self.assertEqual(metricas.operacion({'periodos': []}), {'estado': 'sin_datos', 'periodos': []})
